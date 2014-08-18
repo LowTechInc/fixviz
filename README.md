@@ -2,7 +2,7 @@
 
 FixViz is an open source Java tool to show/edit FIX messages.
 
-![Demo](/gui.png)
+![Demo](https://bitbucket.org/louandramon/fixviz/raw/master/gui.png)
 
 ### How do I get set up? ###
 
