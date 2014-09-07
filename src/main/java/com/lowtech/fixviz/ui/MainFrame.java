@@ -1,4 +1,4 @@
-package com.louandramon.fixviz.ui;
+package com.lowtech.fixviz.ui;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
-import com.louandramon.fixviz.FixTools;
+import com.lowtech.fixviz.FixTools;
 
 import quickfix.ConfigError;
 
