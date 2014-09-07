@@ -1,4 +1,4 @@
-package com.louandramon.fixviz.ui;
+package com.lowtech.fixviz.ui;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;

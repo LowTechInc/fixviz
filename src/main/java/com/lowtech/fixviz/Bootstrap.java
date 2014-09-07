@@ -1,6 +1,6 @@
 package com.lowtech.fixviz;
 
-import com.louandramon.fixviz.ui.MainFrame;
+import com.lowtech.fixviz.ui.MainFrame;
 
 import quickfix.ConfigError;
 
