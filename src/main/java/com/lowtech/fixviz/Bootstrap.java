@@ -1,4 +1,4 @@
-package com.louandramon.fixviz;
+package com.lowtech.fixviz;
 
 import com.louandramon.fixviz.ui.MainFrame;
 

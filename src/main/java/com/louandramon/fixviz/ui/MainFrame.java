@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
-import com.louandramon.fixviz.FixTools;
+import com.lowtech.fixviz.FixTools;
 
 import quickfix.ConfigError;
 

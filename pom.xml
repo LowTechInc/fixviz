@@ -35,7 +35,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.louandramon.fixviz.Bootstrap</mainClass>
+							<mainClass>com.lowtech.fixviz.Bootstrap</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
