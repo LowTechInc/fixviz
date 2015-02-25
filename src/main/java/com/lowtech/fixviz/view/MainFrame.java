@@ -26,6 +26,13 @@ import quickfix.ConfigError;
 import com.lowtech.fixviz.controller.FixTools;
 import com.lowtech.fixviz.model.FixString;
 
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 	// FIX message text area
@@ -108,6 +115,50 @@ public class MainFrame extends JFrame {
 				tree.expandRow(0);
 				treePanel.getViewport().removeAll();
 				treePanel.getViewport().add(tree, null);
+				tree.setEditable(true);
+				tree.addTreeSelectionListener(new TreeSelectionListener(){
+
+					public void valueChanged(TreeSelectionEvent e) {
+						// TODO link the origin value to controller
+						DefaultMutableTreeNode node = 
+								(DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+						//System.out.println(node.toString());
+						controller.selected(node.toString());
+					}
+				});
+				DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
+				treeModel.addTreeModelListener(new TreeModelListener(){
+
+					public void treeNodesChanged(TreeModelEvent e) {
+						// TODO trigger the controller
+						DefaultMutableTreeNode node;
+			            node = (DefaultMutableTreeNode)
+			            (e.getTreePath().getLastPathComponent());
+			            
+			            try {
+			                int index = e.getChildIndices()[0];
+			                node = (DefaultMutableTreeNode)
+			                (node.getChildAt(index));
+			                controller.valueChanged(node.toString(), model);
+			                fixMsgTextArea.setText(model.getFixStr());
+			                
+			            } catch (NullPointerException exc) {}
+						
+					}
+
+					public void treeNodesInserted(TreeModelEvent arg0) {
+						// TODO need a choice
+						
+					}
+
+					public void treeNodesRemoved(TreeModelEvent arg0) {
+						// TODO need a choice
+						
+					}
+
+					/** no function designed for this part*/
+					public void treeStructureChanged(TreeModelEvent arg0) {}
+				});
 			}
 		});
 		controlPanel.add(parseButton);

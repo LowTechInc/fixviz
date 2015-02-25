@@ -17,6 +17,7 @@ import com.lowtech.fixviz.model.FixString;
 public class FixTools
 {
     private boolean showTag = true;
+    private String selectedValue;
 
     public JTree treeify(FixString fixStr) {
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("FIX Tree");
@@ -75,5 +76,53 @@ public class FixTools
 
     public void setShowTag(boolean b) {
         showTag = b;
+    }
+
+    public void selected(String selectedValue){
+    	this.selectedValue = selectedValue;
+    }
+
+    public void valueChanged(String changedValue, FixString model){
+    	String purifiedChangedVal = purifyKeyValue(changedValue);
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	//TODO verify the change and prevent illegal act
+    	model.replaceMessageFragment(purifiedSelected, purifiedChangedVal);
+    	//System.out.println(purifiedSelected);
+    	//System.out.println(purifiedChangedVal);
+    }
+    
+    private String purifyKeyValue(String keyVal){
+    	String returnVal="";
+    	returnVal= substringBeforeFirst(keyVal,'(') + '='
+    			+substringAfterLast(keyVal,"=");
+		return returnVal;
+    	
+    }
+    
+    private String substringAfterLast(String str, String separator) {
+    	
+        if (str.isEmpty()) {
+            return str;
+        }
+        if (separator.isEmpty()) {
+            return "";
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == -1 || pos == (str.length() - separator.length())) {
+            return "";
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    private String substringBeforeFirst(String source, char separator){
+		
+    	String returnVal="";
+    	char[] s = source.toCharArray();
+    	for(int i=0;i<source.length();i++){
+    		if(s[i]!=separator){returnVal+=s[i];}
+    		else return returnVal;
+    	}
+    	return returnVal;
+    	
     }
 }

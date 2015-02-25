@@ -55,4 +55,21 @@ public class FixString {
     public void setDictionary(String dataDictionaryFile) throws ConfigError {
         dictionary = new DataDictionary(dataDictionaryFile);
     }
+
+    public void replaceMessageFragment(String ori, String newVal){
+    	int beginPos = rawFixStr.indexOf(ori);
+    	int endPos = beginPos + ori.length();
+    	rawFixStr = rawFixStr.substring(0, beginPos) + newVal
+    			+ rawFixStr.substring(endPos);
+    	//TODO restraint of change. Basically changes on head and some other piece should be closely watched
+    	int numIDBegin = rawFixStr.lastIndexOf("|9=")+2;
+    	int numIDEnd = rawFixStr.indexOf("|", numIDBegin);
+    	String header = rawFixStr.substring(0, numIDBegin+1);
+    	String footer = rawFixStr.substring(numIDEnd);
+    	int length = Integer.parseInt(rawFixStr.substring(numIDBegin+1, numIDEnd));
+    	int differ = ori.length() - newVal.length();
+    	length -= differ;
+    	rawFixStr = header + length + footer;
+    	
+    }
 }
