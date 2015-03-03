@@ -85,16 +85,31 @@ public class FixTools
     public void valueChanged(String changedValue, FixString model){
     	String purifiedChangedVal = purifyKeyValue(changedValue);
     	String purifiedSelected = purifyKeyValue(selectedValue);
+    	
+    	//debug:
+    	//System.out.println(purifiedChangedVal+"\n"+purifiedSelected);
+    	//System.out.println(changedValue+"\n"+selectedValue);
+    	
     	//TODO verify the change and prevent illegal act
-    	model.replaceMessageFragment(purifiedSelected, purifiedChangedVal);
-    	//System.out.println(purifiedSelected);
-    	//System.out.println(purifiedChangedVal);
+    	model.replaceMessageSegment(purifiedSelected, purifiedChangedVal);
+    	selectedValue = changedValue;
+    	
+    }
+    
+    public void addNewValue(String newVal, FixString model){
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	model.insertNewSegment(purifiedSelected, newVal);
+    	System.out.println(selectedValue);
+    	
     }
     
     private String purifyKeyValue(String keyVal){
     	String returnVal="";
+    	if(!keyVal.contains("(")||keyVal.indexOf("(")>keyVal.indexOf("="))
+    		return keyVal;
     	returnVal= substringBeforeFirst(keyVal,'(') + '='
     			+substringAfterLast(keyVal,"=");
+    	returnVal = "|" + returnVal + "|";
 		return returnVal;
     	
     }
