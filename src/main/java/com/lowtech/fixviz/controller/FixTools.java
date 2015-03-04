@@ -99,7 +99,13 @@ public class FixTools
     public void addNewValue(String newVal, FixString model){
     	String purifiedSelected = purifyKeyValue(selectedValue);
     	model.insertNewSegment(purifiedSelected, newVal);
-    	System.out.println(selectedValue);
+    	//System.out.println(selectedValue);
+    	
+    }
+    
+    public void deleteValue(FixString model){
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	model.removeSegment(purifiedSelected);
     	
     }
     

@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -49,6 +50,7 @@ public class MainFrame extends JFrame {
 	private JRadioButton fieldTagOnButton = new JRadioButton("Yes", true);
 	private JRadioButton fieldTagOffButton = new JRadioButton("No", false);
 	private JButton addEntryButton = new JButton("add Entry");
+	private JButton deleteEntryButton = new JButton("remove entry");
 	private final String newEntryValue = "1776=new_entry";
 
 	// FIX message visualization area
@@ -74,6 +76,9 @@ public class MainFrame extends JFrame {
 
 		this.controller = controller;
 		this.model = model;
+		
+		addEntryButton.setEnabled(false);
+		deleteEntryButton.setEnabled(false);
 	}
 
 	private void addComponentsToPane(Container pane) {
@@ -117,72 +122,97 @@ public class MainFrame extends JFrame {
 
 				model = new FixString(fixMsgTextArea.getText());
 				
+				addEntryButton.setEnabled(true);
+				deleteEntryButton.setEnabled(true);
+
 				treeInit();
 				treeModel = (DefaultTreeModel) tree.getModel();
-				treeModel.addTreeModelListener(new TreeModelListener(){
+				treeModel.addTreeModelListener(new TreeModelListener() {
 
 					public void treeNodesChanged(TreeModelEvent e) {
-						
+
 						DefaultMutableTreeNode node;
-			            node = (DefaultMutableTreeNode)
-			            (e.getTreePath().getLastPathComponent());
-			            
-			            try {
-			                int index = e.getChildIndices()[0];
-			                node = (DefaultMutableTreeNode)
-			                (node.getChildAt(index));
-			                controller.valueChanged(node.toString(), model);
-			                fixMsgTextArea.setText(model.getFixStr());
-			                
-			            } catch (NullPointerException exc) {}
-						
+						node = (DefaultMutableTreeNode) (e.getTreePath()
+								.getLastPathComponent());
+
+						try {
+							int index = e.getChildIndices()[0];
+							node = (DefaultMutableTreeNode) (node
+									.getChildAt(index));
+							controller.valueChanged(node.toString(), model);
+							fixMsgTextArea.setText(model.getFixStr());
+							updateLengthSession();
+
+						} catch (NullPointerException exc) {
+						}
+
 					}
 
 					public void treeNodesInserted(TreeModelEvent arg0) {
-						// TODO working on this
+
 						controller.addNewValue(newEntryValue, model);
 						fixMsgTextArea.setText(model.getFixStr());
-						//treeInit();
-						
+						updateLengthSession();
+
 					}
 
 					public void treeNodesRemoved(TreeModelEvent arg0) {
-						// TODO need a choice
-						
+						controller.deleteValue(model);
+						fixMsgTextArea.setText(model.getFixStr());
+						updateLengthSession();
+
 					}
 
-					/** no function designed for this part*/
-					public void treeStructureChanged(TreeModelEvent arg0) {}
+					/** no function designed for this part */
+					public void treeStructureChanged(TreeModelEvent arg0) {
+					}
 				});
 			}
 		});
 		controlPanel.add(parseButton);
-		
-		addEntryButton.addActionListener(new ActionListener(){
-			//TODO add new sibling entry
+
+		addEntryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//get selected node
-                DefaultMutableTreeNode selectedNode  
-                    = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();  
-                //if no node selected, quit
-                if (selectedNode == null) return;  
-                //get parent node of the selected
-                DefaultMutableTreeNode parent  
-                    = (DefaultMutableTreeNode)selectedNode.getParent();  
-                //if no parent node, quit  
-                if (parent == null) return;  
-                //create a new node 
-                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(newEntryValue);  
-                //get the index number of the selected node
-                int selectedIndex = parent.getIndex(selectedNode);  
-                //insert the new node next to the selected one
-                //treeModel = (DefaultTreeModel) tree.getModel();
-                treeModel.insertNodeInto(newNode, parent, selectedIndex + 1);  
-				
+				// get selected node
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree
+						.getLastSelectedPathComponent();
+				// if no node selected, quit
+				if (selectedNode == null)
+					return;
+				// get parent node of the selected
+				DefaultMutableTreeNode parent = (DefaultMutableTreeNode) selectedNode
+						.getParent();
+				// if no parent node, quit
+				if (parent == null)
+					return;
+				// create a new node
+				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(
+						newEntryValue);
+				// get the index number of the selected node
+				int selectedIndex = parent.getIndex(selectedNode);
+				// insert the new node next to the selected one
+				// treeModel = (DefaultTreeModel) tree.getModel();
+				treeModel.insertNodeInto(newNode, parent, selectedIndex + 1);
+
 			}
-			
+
 		});
 		controlPanel.add(addEntryButton);
+
+		deleteEntryButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+
+				DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree
+						.getLastSelectedPathComponent();
+				if (selectedNode != null && selectedNode.getParent() != null) {
+
+					treeModel.removeNodeFromParent(selectedNode);
+				}
+			}
+
+		});
+		controlPanel.add(deleteEntryButton);
 
 		controlPanel.add(new JLabel("Separator"));
 		separatorTxt.getDocument().addDocumentListener(new DocumentListener() {
@@ -244,22 +274,47 @@ public class MainFrame extends JFrame {
 
 		return controlPanel;
 	}
-	
-	private void treeInit(){
+
+	private void treeInit() {
 		tree = controller.treeify(model);
 		tree.expandRow(0);
 		treePanel.getViewport().removeAll();
 		treePanel.getViewport().add(tree, null);
 		tree.setEditable(true);
-		tree.addTreeSelectionListener(new TreeSelectionListener(){
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
 
 			public void valueChanged(TreeSelectionEvent e) {
 				// TODO link the origin value to controller
-				DefaultMutableTreeNode node = 
-						(DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-				//System.out.println(node.toString());
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) e
+						.getPath().getLastPathComponent();
+				System.out.println(node.toString());
 				controller.selected(node.toString());
 			}
 		});
 	}
+
+	private void updateLengthSession(){
+		DefaultMutableTreeNode treeRoot = (DefaultMutableTreeNode) treeModel.getRoot();
+		Enumeration nodes = treeRoot.depthFirstEnumeration();
+		
+		int pos = model.getFixStr().indexOf("|9=");
+		pos += 3;
+		int endPos = model.getFixStr().indexOf("|", pos);
+		String length = model.getFixStr().substring(pos, endPos);
+		
+		while(nodes.hasMoreElements()){
+			DefaultMutableTreeNode node 
+				= (DefaultMutableTreeNode) nodes.nextElement();
+			String value = (String) node.getUserObject();
+			
+			if(value.substring(0, 2).equals("9=")
+					||value.substring(0, 2).equals("9(")){
+				value = value.substring(0, value.indexOf("=")+1) + length;
+				node.setUserObject(value);
+				break;
+			}
+		}
+		
+	}
+	
 }

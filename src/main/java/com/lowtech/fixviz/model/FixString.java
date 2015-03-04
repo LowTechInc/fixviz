@@ -88,4 +88,16 @@ public class FixString {
     	length -= change;
     	rawFixStr = header + length + footer;
     }
+
+	public void removeSegment(String selected) {
+		
+		int beginPos = rawFixStr.indexOf(selected);
+    	int endPos = beginPos + selected.length();
+    	rawFixStr = rawFixStr.substring(0, beginPos-1) + rawFixStr.substring(endPos);
+
+    	int differ = selected.length()+1;
+    	updateFixLength(differ);
+		 
+		
+	}
 }
