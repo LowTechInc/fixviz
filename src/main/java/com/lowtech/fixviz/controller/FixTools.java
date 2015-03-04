@@ -17,6 +17,7 @@ import com.lowtech.fixviz.model.FixString;
 public class FixTools
 {
     private boolean showTag = true;
+    private String selectedValue;
 
     public JTree treeify(FixString fixStr) {
         DefaultMutableTreeNode top = new DefaultMutableTreeNode("FIX Tree");
@@ -75,5 +76,74 @@ public class FixTools
 
     public void setShowTag(boolean b) {
         showTag = b;
+    }
+
+    public void selected(String selectedValue){
+    	this.selectedValue = selectedValue;
+    }
+
+    public void valueChanged(String changedValue, FixString model){
+    	String purifiedChangedVal = purifyKeyValue(changedValue);
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	
+    	//debug:
+    	//System.out.println(purifiedChangedVal+"\n"+purifiedSelected);
+    	//System.out.println(changedValue+"\n"+selectedValue);
+    	
+    	//TODO verify the change and prevent illegal act
+    	model.replaceMessageSegment(purifiedSelected, purifiedChangedVal);
+    	selectedValue = changedValue;
+    	
+    }
+    
+    public void addNewValue(String newVal, FixString model){
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	model.insertNewSegment(purifiedSelected, newVal);
+    	//System.out.println(selectedValue);
+    	
+    }
+    
+    public void deleteValue(FixString model){
+    	String purifiedSelected = purifyKeyValue(selectedValue);
+    	model.removeSegment(purifiedSelected);
+    	
+    }
+    
+    private String purifyKeyValue(String keyVal){
+    	String returnVal="";
+    	if(!keyVal.contains("(")||keyVal.indexOf("(")>keyVal.indexOf("="))
+    		return keyVal;
+    	returnVal= substringBeforeFirst(keyVal,'(') + '='
+    			+substringAfterLast(keyVal,"=");
+    	returnVal = "|" + returnVal + "|";
+		return returnVal;
+    	
+    }
+    
+    private String substringAfterLast(String str, String separator) {
+    	
+        if (str.isEmpty()) {
+            return str;
+        }
+        if (separator.isEmpty()) {
+            return "";
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == -1 || pos == (str.length() - separator.length())) {
+            return "";
+        }
+        return str.substring(pos + separator.length());
+    }
+
+    private String substringBeforeFirst(String source, char separator){
+		
+    	String returnVal="";
+    	char[] s = source.toCharArray();
+    	for(int i=0;i<source.length();i++){
+    		if(s[i]!=separator){returnVal+=s[i];}
+    		else return returnVal;
+    	}
+    	return returnVal;
+    	
     }
 }

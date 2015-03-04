@@ -55,4 +55,49 @@ public class FixString {
     public void setDictionary(String dataDictionaryFile) throws ConfigError {
         dictionary = new DataDictionary(dataDictionaryFile);
     }
+
+    public void replaceMessageSegment(String ori, String newVal){
+    	int beginPos = rawFixStr.indexOf(ori);
+    	int endPos = beginPos + ori.length();
+    	rawFixStr = rawFixStr.substring(0, beginPos) + newVal
+    			+ rawFixStr.substring(endPos);
+    	//TODO restraint of change. Basically changes on head and some other piece should be closely watched
+    	int differ = ori.length() - newVal.length();
+    	updateFixLength(differ);
+    	
+    }
+    
+    public void insertNewSegment(String SelectedPosition, String newValue){
+    	int Pos = rawFixStr.indexOf(SelectedPosition) 
+    			+ SelectedPosition.length();
+    	
+    	rawFixStr = rawFixStr.substring(0, Pos)
+    			+ newValue + "|" + rawFixStr.substring(Pos);
+    	
+    	int differ = -(newValue.length()+1);
+    	updateFixLength(differ);
+    	
+    }
+    
+    private void updateFixLength(int change){
+    	int numIDBegin = rawFixStr.lastIndexOf("|9=")+2;
+    	int numIDEnd = rawFixStr.indexOf("|", numIDBegin);
+    	String header = rawFixStr.substring(0, numIDBegin+1);
+    	String footer = rawFixStr.substring(numIDEnd);
+    	int length = Integer.parseInt(rawFixStr.substring(numIDBegin+1, numIDEnd));
+    	length -= change;
+    	rawFixStr = header + length + footer;
+    }
+
+	public void removeSegment(String selected) {
+		
+		int beginPos = rawFixStr.indexOf(selected);
+    	int endPos = beginPos + selected.length();
+    	rawFixStr = rawFixStr.substring(0, beginPos-1) + rawFixStr.substring(endPos);
+
+    	int differ = selected.length()+1;
+    	updateFixLength(differ);
+		 
+		
+	}
 }
