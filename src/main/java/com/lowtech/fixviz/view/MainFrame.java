@@ -116,14 +116,17 @@ public class MainFrame extends JFrame {
 		separatorTxt.getDocument().addDocumentListener(new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
 				model.setSeparator(separatorTxt.getText());
+				fixMsgTextArea.setText(model.getFixStr());
 			}
 
 			public void removeUpdate(DocumentEvent e) {
 				model.setSeparator(separatorTxt.getText());
+				fixMsgTextArea.setText(model.getFixStr());
 			}
 
 			public void insertUpdate(DocumentEvent e) {
 				model.setSeparator(separatorTxt.getText());
+				fixMsgTextArea.setText(model.getFixStr());
 			}
 		});
 		controlPanel.add(separatorTxt);

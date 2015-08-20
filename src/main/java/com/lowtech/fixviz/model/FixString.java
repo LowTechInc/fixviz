@@ -41,7 +41,10 @@ public class FixString {
 	}
 	
 	public void setSeparator(String separator) {
-		this.separator = separator;
+		if (separator != null && !separator.isEmpty()) {
+			this.rawFixStr = this.rawFixStr.replace(this.separator, separator);
+			this.separator = separator;
+		}
 	}
 	
 	public String getSeparator() {
