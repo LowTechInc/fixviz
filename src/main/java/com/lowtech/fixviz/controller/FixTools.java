@@ -65,7 +65,17 @@ public class FixTools
             while (groupItr.hasNext()) {
                 final Group group = groupItr.next();
 
-                final DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(group.getFieldTag() + "=");
+                String groupNodeTxt;
+                if (showTag) {
+                	String tagName = dictionary.getFieldName(group.getFieldTag());
+                	tagName = (tagName != null) ? tagName : "UNKNOWN";
+                	groupNodeTxt = group.getFieldTag() + "(" + tagName + ")";
+                }
+                else {
+                	groupNodeTxt = String.valueOf(group.getFieldTag());
+                }
+                
+                final DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(groupNodeTxt);
                 node.add(groupNode);
 
                 treeify(group, groupNode, dictionary);
