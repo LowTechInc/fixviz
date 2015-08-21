@@ -104,6 +104,7 @@ public class MainFrame extends JFrame {
 				System.out.println(fixMsgTextArea.getText().replace(
 						separatorTxt.getText(), String.valueOf('\u0001')));
 
+				model.setFixStr(fixMsgTextArea.getText().trim());
 				JTree tree = controller.treeify(model);
 				tree.expandRow(0);
 				treePanel.getViewport().removeAll();

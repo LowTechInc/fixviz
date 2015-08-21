@@ -40,6 +40,10 @@ public class FixString {
 		return rawFixStr;
 	}
 	
+	public void setFixStr(String fixStr) {
+		this.rawFixStr = fixStr;
+	}
+	
 	public void setSeparator(String separator) {
 		if (separator != null && !separator.isEmpty()) {
 			this.rawFixStr = this.rawFixStr.replace(this.separator, separator);
