@@ -105,6 +105,9 @@ public class MainFrame extends JFrame {
 						separatorTxt.getText(), String.valueOf('\u0001')));
 
 				model.setFixStr(fixMsgTextArea.getText().trim());
+				model.setSeparator(separatorTxt.getText().trim());
+				fixMsgTextArea.setText(model.getFixStr());
+				
 				JTree tree = controller.treeify(model);
 				tree.expandRow(0);
 				treePanel.getViewport().removeAll();
@@ -114,21 +117,13 @@ public class MainFrame extends JFrame {
 		controlPanel.add(parseButton);
 
 		controlPanel.add(new JLabel("Separator"));
-		separatorTxt.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent e) {
+		separatorTxt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				model.setFixStr(fixMsgTextArea.getText().trim());
 				model.setSeparator(separatorTxt.getText());
 				fixMsgTextArea.setText(model.getFixStr());
-			}
-
-			public void removeUpdate(DocumentEvent e) {
-				model.setSeparator(separatorTxt.getText());
-				fixMsgTextArea.setText(model.getFixStr());
-			}
-
-			public void insertUpdate(DocumentEvent e) {
-				model.setSeparator(separatorTxt.getText());
-				fixMsgTextArea.setText(model.getFixStr());
-			}
+				
+			}		
 		});
 		controlPanel.add(separatorTxt);
 

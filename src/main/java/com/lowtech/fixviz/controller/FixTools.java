@@ -36,6 +36,7 @@ public class FixTools
 	        treeify(fixMessage.getTrailer(), trailer, fixStr.getDictionary());
         }
 
+        //fixTree.setEditable(true);
         return fixTree;
     }
 
@@ -53,7 +54,8 @@ public class FixTools
                 nodeTxt = field.getTag() + "=" + field.getObject();
             }
 
-            node.add(new DefaultMutableTreeNode(nodeTxt));
+            final DefaultMutableTreeNode  fieldNode = new DefaultMutableTreeNode(nodeTxt);
+            node.add(fieldNode);
         }
 
         final Iterator<Integer> groupKeyItr = fieldMap.groupKeyIterator();
