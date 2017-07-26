@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.tree.*;
 
 import quickfix.ConfigError;
 
@@ -110,6 +112,7 @@ public class MainFrame extends JFrame {
 				
 				JTree tree = controller.treeify(model);
 				tree.expandRow(0);
+				expandTree(tree);
 				treePanel.getViewport().removeAll();
 				treePanel.getViewport().add(tree, null);
 			}
@@ -170,5 +173,41 @@ public class MainFrame extends JFrame {
 		controlPanel.add(fieldTagOffButton);
 
 		return controlPanel;
+	}
+
+
+	/**
+	 * expand a tree
+	 *
+	 * @param tree: the tree to be expanded
+	 */
+	private void expandTree(JTree tree) {
+		TreeNode node = (TreeNode) tree.getModel().getRoot();
+		expandAll(tree, new TreePath(node), true);
+	}
+
+	/**
+	 * fully expand or collapse a tree
+	 *
+	 * @param tree: the JTree to be processed
+	 * @param parent: root path of the tree
+	 * @param expand: 'true' if to expand, 'false' when to collapse
+	 */
+	private void expandAll(JTree tree, TreePath parent, boolean expand) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+
+		if (node.getChildCount() > 0) {
+			for (Enumeration e = node.children(); e.hasMoreElements();) {
+				TreeNode n = (TreeNode) e.nextElement();
+				TreePath path = parent.pathByAddingChild(n);
+				expandAll(tree, path, expand);
+
+			}
+		}
+		if (expand) {
+			tree.expandPath(parent);
+		} else {
+			tree.collapsePath(parent);
+		}
 	}
 }
